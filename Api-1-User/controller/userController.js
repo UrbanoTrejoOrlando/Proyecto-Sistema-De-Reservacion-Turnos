@@ -62,7 +62,7 @@ const getUserById = async(req,res)=>{
     const {userid} = req.params;
     try {
         // Obtener un usuario por el id
-        const contact = await contactServices.GetContactById(contactid);
+        const user = await userServices.GetUserById(userid);
         // Configuracion del json
         res.status(200).json(contact);
     } catch (error) {
