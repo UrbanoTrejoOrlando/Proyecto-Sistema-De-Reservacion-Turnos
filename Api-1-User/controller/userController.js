@@ -74,4 +74,19 @@ const getUserById = async(req,res)=>{
 };
 
 
-
+// Peticion para actualizar un usuario
+const updateUser = async (req, res) =>{
+    const {userid} = req.params;
+    const userData = req.body;
+    try {
+        const updateuser = await userServices.UpdateUserById(userid, userData);
+        res.status(201).json({
+            message: "Contacto actualizado correctamente",
+            user: updateuser,
+        })
+    } catch (error) {
+        res.status(400).json({
+            error: error.message,
+        }); 
+    }
+};
