@@ -68,7 +68,7 @@ const getUserById = async(req,res)=>{
     } catch (error) {
         // Mensaje de error por si algo falla
         res.status(400).json({
-            error: ("Error al obteneral usuario" + error.message),
+            error: ("Error al obtener al usuario" + error.message),
         });   
     }
 };
@@ -86,7 +86,7 @@ const updateUser = async (req, res) =>{
         })
     } catch (error) {
         res.status(400).json({
-            error: ("Error al obteneral usuario" + error.message),
+            error: ("Error al obtener al actualizar el usuario" + error.message),
 
         }); 
     }
