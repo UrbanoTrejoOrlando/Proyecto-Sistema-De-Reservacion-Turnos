@@ -3,10 +3,7 @@ const userServices = require("../services/modelServices");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken")
 
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const userServices = require("../services/modelServices");
-
+// Funcion para crear un usuario
 const createUser = async (req, res) => {
     try {
         const userData = req.body;
@@ -29,7 +26,7 @@ const createUser = async (req, res) => {
         const token = jwt.sign(
             { id: newUser._id, email: newUser.email },
             SECRET_KEY,
-            { expiresIn: "1h" }
+            { expiresIn: "24h" }
         );
 
         // Respuesta
