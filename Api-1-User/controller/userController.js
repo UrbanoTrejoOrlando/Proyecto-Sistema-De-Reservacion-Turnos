@@ -1,7 +1,7 @@
 // Obtener en una variable los servicios de la api
 const userServices = require("../services/modelServices");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken")
 
 // Peticion para crear un nuevo usuario
 const createContact = async (req, res) =>{
