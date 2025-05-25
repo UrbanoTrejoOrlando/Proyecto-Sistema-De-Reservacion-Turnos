@@ -57,4 +57,18 @@ const getAllUser = async (req,res)=>{
     }    
 };
 
-
+// Peticion para obtener un usuario por el id
+const getUserById = async(req,res)=>{
+    const {userid} = req.params;
+    try {
+        // Obtener un usuario por el id
+        const contact = await contactServices.GetContactById(contactid);
+        // Configuracion del json
+        res.status(200).json(contact);
+    } catch (error) {
+        // Mensaje de error por si algo falla
+        res.status(400).json({
+            error: error.message,
+        });   
+    }
+};
