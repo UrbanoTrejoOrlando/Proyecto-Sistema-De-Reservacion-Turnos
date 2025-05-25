@@ -41,7 +41,6 @@ const createUser = async (req, res) => {
     }
 };
 
-
 // Peticion para obtener todos los usuarios
 const getAllUser = async (req,res)=>{
     try {
@@ -57,4 +56,5 @@ const getAllUser = async (req,res)=>{
         });   
     }    
 };
+
 
