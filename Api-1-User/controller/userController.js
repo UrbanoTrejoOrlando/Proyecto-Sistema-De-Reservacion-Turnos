@@ -3,32 +3,45 @@ const userServices = require("../services/modelServices");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken")
 
-// Peticion para crear un nuevo usuario
-const createUser = async (req, res) =>{
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const userServices = require("../services/modelServices");
+
+const createUser = async (req, res) => {
     try {
-        // Guardar los datos del body en una variable
         const userData = req.body;
 
-        //Verificar si la contraseña se ingreso
-        if(!userData.contrasenia){
+        // Validar que venga la contraseña
+        if (!userData.contrasenia) {
             return res.status(400).json({ error: "La contraseña es obligatoria" });
         }
 
-        
+        // Hashear la contraseña
+        const salt = await bcrypt.genSalt(10);
+        userData.contrasenia = await bcrypt.hash(userData.contrasenia, salt);
 
+        // Crear el usuario
+        const newUser = await userServices.CreateUser(userData);
 
+        const SECRET_KEY = process.env.JWT_SECRET ;
 
-        // Crear al contacto
-        const newUser = await contactServices.CreateUser(userData);
-        // Configuracion del json
+        // Crear el token JWT
+        const token = jwt.sign(
+            { id: newUser._id, email: newUser.email },
+            SECRET_KEY,
+            { expiresIn: "1h" }
+        );
+
+        // Respuesta
         res.status(201).json({
-            message: "Contacto creado correctamente",
+            message: "Usuario creado correctamente",
             user: newUser,
+            token,
         });
+
     } catch (error) {
-        // Mensaje de error por si algo falla
-        res.status(400).json({
-            error: error.message,
-        });
+        res.status(400).json({ error: error.message });
     }
 };
+
+
