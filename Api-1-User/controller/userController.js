@@ -3,7 +3,7 @@ const userServices = require("../services/modelServices");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken")
 
-// Funcion para crear un usuario
+// Peticion para crear un usuario
 const createUser = async (req, res) => {
     try {
         const userData = req.body;
@@ -42,3 +42,18 @@ const createUser = async (req, res) => {
 };
 
 
+// Peticion para obtener todos los usuarios
+const getAllUser = async (req,res)=>{
+    try {
+        // Obtener todos los usuarios
+        const users = await userServices.GetAllUser();
+        // Configuracion del json
+        res.status(200).json(contacts);
+
+    } catch (error) {
+        // Mensaje de error por si algo falla
+        res.status(400).json({
+            error: ("Error fallo la conexion " + error.message),
+        });   
+    }    
+};
