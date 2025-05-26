@@ -1,5 +1,5 @@
 // Obtener en una variable los servicios de la api
-const userServices = require("../services/modelServices");
+const userServices = require("../services/userServices");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken")
 
@@ -47,7 +47,7 @@ const getAllUser = async (req,res)=>{
         // Obtener todos los usuarios
         const users = await userServices.GetAllUser();
         // Configuracion del json
-        res.status(200).json(contacts);
+        res.status(200).json(users);
 
     } catch (error) {
         // Mensaje de error por si algo falla
@@ -64,31 +64,57 @@ const getUserById = async(req,res)=>{
         // Obtener un usuario por el id
         const user = await userServices.GetUserById(userid);
         // Configuracion del json
-        res.status(200).json(contact);
+        res.status(200).json(user);
     } catch (error) {
         // Mensaje de error por si algo falla
         res.status(400).json({
-            error: ("Error al obtener al usuario" + error.message),
+            error:error.message
+            //error: ("Error al obtener al usuario" + error.message),
         });   
     }
 };
 
 
 // Peticion para actualizar un usuario
-const updateUser = async (req, res) =>{
-    const {userid} = req.params;
+const updateUser = async (req, res) => {
+    const { userid } = req.params;
     const userData = req.body;
+
     try {
+        if (userData.contrasenia) {
+            const salt = await bcrypt.genSalt(10);
+            userData.contrasenia = await bcrypt.hash(userData.contrasenia, salt);
+        }
+
+        // Actualizamos al usuario
         const updateuser = await userServices.UpdateUserById(userid, userData);
+
         res.status(201).json({
             message: "Contacto actualizado correctamente",
             user: updateuser,
+        });
+
+    } catch (error) {
+        res.status(400).json({
+            error: "Error al actualizar el usuario: " + error.message,
+        });
+    }
+};
+
+// Peticion para eliminar un usuario
+const deleteUser = async (req,res) =>{
+    const {userid} = req.params;
+    try {
+        const deleteduser = await userServices.DeleteUser(userid);
+        res.status(201).json({
+            message: "Contacto eliminado",          
         })
     } catch (error) {
         res.status(400).json({
-            error: ("Error al obtener al actualizar el usuario" + error.message),
-
+            error: ("Error al obtener al eliminar el usuario" + error.message),
         }); 
     }
 };
 
+// Exportacion de las peticiones para que se utilizen en otras partes del proyecto
+module.exports={createUser, getAllUser, getUserById, updateUser, deleteUser};
