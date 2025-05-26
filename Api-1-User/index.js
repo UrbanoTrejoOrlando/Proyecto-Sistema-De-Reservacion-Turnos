@@ -1,3 +1,4 @@
+// importacion del paquete de express
 const express = require("express");
 const cors = require("cors");
 const {ConnectDB} = require("./data/config");
