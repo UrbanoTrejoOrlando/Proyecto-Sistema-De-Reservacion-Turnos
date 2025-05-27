@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const {ConnectDB} = require("./data/config");
-// importacion de las rutas
 const userRouter = require("./routes/userRoutes");
 // Importacion dotenv
 require("dotenv").config();
