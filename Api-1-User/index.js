@@ -18,6 +18,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api-1-user',userRouter);
+//Agregar la conexion a la base de datos
 ConnectDB();
 
 app.listen(PORT, ()=>{
