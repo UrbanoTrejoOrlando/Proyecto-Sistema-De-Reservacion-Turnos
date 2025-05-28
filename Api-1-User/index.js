@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const {ConnectDB} = require("./data/config");
 const userRouter = require("./routes/userRoutes");
-// Importacion dotenv
 require("dotenv").config();
 
 // Definicion del puerto 
