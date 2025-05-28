@@ -20,6 +20,7 @@ app.use('/api-1-user',userRouter);
 //Agregar la conexion a la base de datos
 ConnectDB();
 
+// Ejecucion del servidor
 app.listen(PORT, ()=>{
     console.log("Server running in http://localhost:"+PORT)
 });
