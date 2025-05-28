@@ -6,7 +6,6 @@ require("dotenv").config();
 
 const PORT = process.env.PORT
 
-// Creacion de la instancia del servidor
 const app = express();
 app.use(cors());
 app.use(express.json());
