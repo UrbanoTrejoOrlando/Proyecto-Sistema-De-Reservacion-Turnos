@@ -2,6 +2,7 @@
 const express = require("express");
 // importacion del paquete de cors
 const cors = require("cors");
+// conexion de la base de datos
 const {ConnectDB} = require("./data/config");
 const userRouter = require("./routes/userRoutes");
 require("dotenv").config();
