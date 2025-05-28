@@ -13,7 +13,6 @@ app.use(express.json());
 app.use('/api-1-user',userRouter);
 ConnectDB();
 
-// Ejecucion del servidor
 app.listen(PORT, ()=>{
     console.log("Server running in http://localhost:"+PORT)
 });
