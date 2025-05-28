@@ -8,7 +8,7 @@ const {ConnectDB} = require("./data/config");
 const userRouter = require("./routes/userRoutes");
 // Importacion dotenv
 require("dotenv").config();
-
+// Definicion del puerto 
 const PORT = process.env.PORT
 
 const app = express();
