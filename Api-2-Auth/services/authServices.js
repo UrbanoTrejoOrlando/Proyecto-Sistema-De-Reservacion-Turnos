@@ -1,4 +1,5 @@
 // Importacion de librerias
+const { axios } = require("axios");
 require("dotenv").config()
 
 const URL_API = process.env.URL_API;
