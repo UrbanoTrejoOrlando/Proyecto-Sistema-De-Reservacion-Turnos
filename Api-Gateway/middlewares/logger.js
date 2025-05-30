@@ -7,6 +7,7 @@ const logger = (req, res, next)=>{
     // Obtener los datos de la url
     const url = req.originalUrl;
 
+// Imprimir todos los datos
 console.log(`[${fecha}]${method} ${url}`);
 next();
 }
