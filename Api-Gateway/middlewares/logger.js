@@ -4,6 +4,7 @@ const logger = (req, res, next)=>{
     const fecha = new Date().toDateString();
     // Obtencion de todas las peticiones 
     const method = req.method;
+    // Obtener los datos de la url
     const url = req.originalUrl;
 
 console.log(`[${fecha}]${method} ${url}`);
