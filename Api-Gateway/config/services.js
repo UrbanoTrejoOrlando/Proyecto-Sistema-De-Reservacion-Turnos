@@ -14,3 +14,5 @@ const services =[
 
     }
 ]
+ // Exportacion del modulo 
+module.exports = {services};
