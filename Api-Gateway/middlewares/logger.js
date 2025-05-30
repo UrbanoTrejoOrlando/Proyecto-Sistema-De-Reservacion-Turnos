@@ -9,6 +9,7 @@ const logger = (req, res, next)=>{
 
 // Imprimir todos los datos
 console.log(`[${fecha}]${method} ${url}`);
+// Funcion para especificar que express llame al siguiente middleware
 next();
 }
 
