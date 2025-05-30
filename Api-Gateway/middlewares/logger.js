@@ -13,4 +13,5 @@ console.log(`[${fecha}]${method} ${url}`);
 next();
 }
 
-module.exports = logger
+// Exportaion del modulo
+module.exports = logger;
