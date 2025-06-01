@@ -40,6 +40,11 @@ const registroLogin = async(e)=>{
 
     // Guardar el token en localStorage 
     localStorage.setItem('token', data.token);
+    localStorage.setItem('rol', data.rol);
+
+    // Validar al iniciar sesion es un usuario o administrador 
+
+
 
     // Mensaje con Sweetalert
     Swal.fire({
