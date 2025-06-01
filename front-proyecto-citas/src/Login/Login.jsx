@@ -10,6 +10,10 @@ const Login = () => {
 // Variable de estado para el redireccionamiento
 const navigate = useNavigate();
 
+// Creacion de las variables de estado
+const [correo, setCorreo] = React.useState("")
+const [contrasenia, setContrasenia] = React.useState("")
+
 
 
 
