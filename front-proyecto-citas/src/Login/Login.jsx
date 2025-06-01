@@ -51,7 +51,7 @@ const registroLogin = async(e)=>{
     Swal.fire({
       icon: 'error',
       title: 'Error de autenticación',
-      text: err.message,
+      text: error.message,
     });
   }
 }
