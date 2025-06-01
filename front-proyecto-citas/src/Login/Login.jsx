@@ -48,7 +48,11 @@ const registroLogin = async(e)=>{
     navigate("/registro")
 
   } catch (error) {
-  
+    Swal.fire({
+      icon: 'error',
+      title: 'Error de autenticación',
+      text: err.message,
+    });
   }
 }
 
