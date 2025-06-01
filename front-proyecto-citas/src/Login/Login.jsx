@@ -29,6 +29,24 @@ const registroLogin = async(e)=>{
       // Convierte el cuerpo del body a json
       body: JSON.stringify(correo, contrasenia)
     });
+
+    // Guardar los datos en un json
+    const data = await response.json();
+
+    // Guardar el token en localStorage 
+    localStorage.setItem('token', data.token);
+
+    // Mensaje con Sweetalert
+    Swal.fire({
+      icon: 'success',
+      title: `¡Bienvenido`,
+      showConfirmButton: false,
+      timer: 2000
+    });
+
+    // Redirigir al apartado de registro
+    navigate("/registro")
+
   } catch (error) {
   
   }
