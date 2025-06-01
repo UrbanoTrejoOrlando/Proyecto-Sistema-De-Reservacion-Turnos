@@ -1,8 +1,30 @@
 import React from 'react'
 import {Mail,RectangleEllipsis} from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { ApiAuth } from '../common/server'
+import Swal from 'sweetalert2'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
+
+// Variable de estado para el redireccionamiento
+const navigate = useNavigate();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
         <form className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md">
