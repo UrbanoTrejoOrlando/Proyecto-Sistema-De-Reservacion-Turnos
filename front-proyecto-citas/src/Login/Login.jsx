@@ -69,6 +69,8 @@ const registroLogin = async(e)=>{
               required
               className="w-full outline-none text-sm"
               value={correo}
+              onChange={(e) => setCorreo(e.target.value)}
+
             />
           </div>
       
@@ -80,6 +82,9 @@ const registroLogin = async(e)=>{
               placeholder="Ingresa la contraseña"
               required
               className="w-full outline-none text-sm"
+              value={contrasenia}
+              onChange={(e) => setContrasenia(e.target.value)}
+
             />
           </div>
       
