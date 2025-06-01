@@ -43,16 +43,21 @@ const registroLogin = async(e)=>{
     localStorage.setItem('rol', data.rol);
 
     // Validar al iniciar sesion es un usuario o administrador 
+    if(data.rol == "Administrador"){
+      // Mensaje con Sweetalert
+      Swal.fire({
+        icon: 'success',
+        title: `¡Bienvenido Administrador`,
+        showConfirmButton: false,
+        timer: 2000
+      });
+      // Redirigir al apartado de registro
+      navigate("/registro")
+
+    }
 
 
-
-    // Mensaje con Sweetalert
-    Swal.fire({
-      icon: 'success',
-      title: `¡Bienvenido`,
-      showConfirmButton: false,
-      timer: 2000
-    });
+    
 
     // Redirigir al apartado de registro
     navigate("/registro")
