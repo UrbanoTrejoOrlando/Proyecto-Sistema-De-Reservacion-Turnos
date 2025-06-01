@@ -17,8 +17,22 @@ const [contrasenia, setContrasenia] = React.useState("")
 // Funcion para poder hacer las diferentes solicitudes
 const registroLogin = async(e)=>{
   e.preventDefault();
-}
 
+
+  // EValuacion de errores con un try catch
+  try {
+    const response = await fetch(ApiAuth, {
+      method: "POST",
+      headers:{
+          "Content-Type": "application/json",
+      },
+      // Convierte el cuerpo del body a json
+      body: JSON.stringify(correo, contrasenia)
+    });
+  } catch (error) {
+  
+  }
+}
 
 
 
