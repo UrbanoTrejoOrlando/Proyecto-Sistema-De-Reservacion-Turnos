@@ -27,7 +27,12 @@ const registroLogin = async(e)=>{
           "Content-Type": "application/json",
       },
       // Convierte el cuerpo del body a json
-      body: JSON.stringify(correo, contrasenia)
+      body: JSON.stringify({
+        correo: correo,
+        contrasenia: contrasenia
+      })
+      
+      
     });
 
     // Guardar los datos en un json
