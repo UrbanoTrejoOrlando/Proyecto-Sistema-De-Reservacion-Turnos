@@ -51,9 +51,21 @@ const registroLogin = async(e)=>{
         showConfirmButton: false,
         timer: 2000
       });
-      // Redirigir al apartado de registro
-      navigate("/registro")
+      // Redirigir al apartado de administrador
+      navigate("/administrador")
 
+    } else if (data.rol == "Cliente"){
+      // Mensaje con Sweetalert
+      Swal.fire({
+        icon: 'success',
+        title: `¡Bienvenido Cliente`,
+        showConfirmButton: false,
+        timer: 2000
+      });
+      // Redirigir al apartado de administrador
+      navigate("/cliente")
+    } else {
+      throw new Error("Rol desconocido");
     }
 
 
