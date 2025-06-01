@@ -19,7 +19,7 @@ const [contrasenia, setContrasenia] = React.useState("");
 const [rol,setRol] = React.useState("");
 const [telefono,setTelefono] = React.useState("");
 
-  // Funcion para poder hacer las diferentes solicitudes
+// Funcion para poder hacer las diferentes solicitudes
 const cargarDatos = async (usuarios)=> {
     //Conexion con la api perteneciente al back
     const response = await fetch(ApiUsuarios, {
