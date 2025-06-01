@@ -55,22 +55,9 @@ const registroLogin = async(e)=>{
     });
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
-        <form className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md">
+        <form  onSubmit={registroLogin} className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md">
           <h2 className="text-2xl font-bold text-gray-800 text-center mb-5">Inicio de Sesión</h2>
       
           <div className="mb-3 flex items-center border rounded-xl px-3 
@@ -81,6 +68,7 @@ const registroLogin = async(e)=>{
               placeholder="Ingresa el correo"
               required
               className="w-full outline-none text-sm"
+              value={correo}
             />
           </div>
       
