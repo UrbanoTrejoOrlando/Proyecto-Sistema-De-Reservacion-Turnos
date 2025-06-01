@@ -40,10 +40,10 @@ const registroLogin = async(e)=>{
 
     // Guardar el token en localStorage 
     localStorage.setItem('token', data.token);
-    localStorage.setItem('rol', data.rol);
+    localStorage.setItem('rol', data.user.rol);
 
     // Validar al iniciar sesion es un usuario o administrador 
-    if(data.rol == "Administrador"){
+    if(data.user.rol === "Administrador"){
       // Mensaje con Sweetalert
       Swal.fire({
         icon: 'success',
@@ -54,7 +54,7 @@ const registroLogin = async(e)=>{
       // Redirigir al apartado de administrador
       navigate("/administrador")
 
-    } else if (data.rol == "Cliente"){
+    } else if (data.user.rol === "Cliente"){
       // Mensaje con Sweetalert
       Swal.fire({
         icon: 'success',
@@ -67,18 +67,12 @@ const registroLogin = async(e)=>{
     } else {
       throw new Error("Rol desconocido");
     }
-
-
     
-
-    // Redirigir al apartado de registro
-    navigate("/registro")
 
   } catch (error) {
     Swal.fire({
       icon: 'error',
-      title: 'Error de autenticación',
-      text: error.message,
+      title: 'Error de autenticación, credenciales incorrectas',
     });
   }
 }
