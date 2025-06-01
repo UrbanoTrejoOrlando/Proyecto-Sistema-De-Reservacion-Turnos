@@ -14,7 +14,10 @@ const navigate = useNavigate();
 const [correo, setCorreo] = React.useState("")
 const [contrasenia, setContrasenia] = React.useState("")
 
-
+// Funcion para poder hacer las diferentes solicitudes
+const registroLogin = async(e)=>{
+  e.preventDefault();
+}
 
 
 
