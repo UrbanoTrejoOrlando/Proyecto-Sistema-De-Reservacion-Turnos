@@ -46,3 +46,45 @@ const GetServiceById = async(serviceid)=>{
         throw new Error("Error al obtener el servicio" + error.message);
     }
 };
+
+
+// Funcion para actualizar un servicio
+const UpdateServiceById = async (serviceid, data)=>{
+    try {
+        // Alctualizacion del servicio por su id
+        const updateService = await Services.findByIdAndUpdate(
+            serviceid,
+            data,
+            {new: true} // Retorna el documento actualizado
+ 
+        );
+        // Validar si el usuario existe
+        if(!updateService) throw new Error("El servicio no existe");
+        // retorna el usuario
+        return updateService;
+        
+    } catch (error) {
+        // Mensaje de error si algo falla
+        throw new Error("Error al actualizar el servicio " + error.message);
+    }
+};
+
+// Funcion para eliminar un servicio
+const DeleteService = async(serviceid)=>{
+    try {
+        // Eliminacion del servicio por el id
+        const deleteservice = await Services.findByIdAndDelete(servicesid);
+        // Validar si el servicio existe
+        if(!deleteservice) throw new Error("El servicio no existe");
+        // Retorna el contacto
+        return deleteservice;
+      
+    } catch (error) {
+        // Mensaje de errro si algo falla
+        throw new Error("Error al actualizar al servicio" + error.message);
+    }
+};
+
+
+// Exportacion de funciones
+module.exports = {CreateService, GetAllServices,  GetServiceById, UpdateServiceById, DeleteService };
