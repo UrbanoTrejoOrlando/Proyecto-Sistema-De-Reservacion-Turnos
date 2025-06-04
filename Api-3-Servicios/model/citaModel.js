@@ -2,7 +2,7 @@
 const mongoose = require("mongoose");
 
 // Definición del esquema para la colección de citas/servicios
-const citaSchema = new mongoose.Schema(
+const serviceSchema = new mongoose.Schema(
   {
     nombre: {
       type: String,
@@ -43,4 +43,4 @@ const citaSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Cita", citaSchema);
+module.exports = mongoose.model("Servicio", serviceSchema);
