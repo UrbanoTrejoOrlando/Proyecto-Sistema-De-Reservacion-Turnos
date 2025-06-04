@@ -1,0 +1,12 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: Api-3-Servicios
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: api3
+      MONGO_INITDB_ROOT_PASSWORD: api3servicios1234
+    ports:
+      - "27026:27017"
+    volumes:
+      - ./mongodb_data:/data/db
