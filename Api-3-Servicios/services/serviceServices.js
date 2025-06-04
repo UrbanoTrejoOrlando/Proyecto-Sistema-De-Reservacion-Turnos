@@ -35,14 +35,14 @@ const GetAllServices = async() =>{
 const GetServiceById = async(serviceid)=>{
     try {
         // Obtencion del servicio
-        const service = await Usuarios.findById(userid);
-        // Validar si el usuario existe 
-        if(!user) throw new Error("El usuario no existe "+ error.message);
+        const service = await Services.findById(serviceid);
+        // Validar si el servicio existe 
+        if(!service) throw new Error("El servicio no existe "+ error.message);
         // retorna el usuarios
-        return user;
+        return service;
 
     } catch (error) {
         // Mensaje de errro si algo falla
-        throw new Error("Error al obtener el usuario" + error.message);
+        throw new Error("Error al obtener el servicio" + error.message);
     }
 };
