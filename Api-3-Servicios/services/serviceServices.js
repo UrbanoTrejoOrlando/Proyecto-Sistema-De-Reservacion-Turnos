@@ -7,7 +7,7 @@ const CreateService = async (data)=>{
         // Creacion de un usuario
         const newService = new Services(data);
         // Guardar el regsitro en la base de datos
-        await newServices.save()
+        await newService.save()
         // Retornar el nuevo usuario
         return newService;
 
@@ -73,7 +73,7 @@ const UpdateServiceById = async (serviceid, data)=>{
 const DeleteService = async(serviceid)=>{
     try {
         // Eliminacion del servicio por el id
-        const deleteservice = await Services.findByIdAndDelete(servicesid);
+        const deleteservice = await Services.findByIdAndDelete(serviceid);
         // Validar si el servicio existe
         if(!deleteservice) throw new Error("El servicio no existe");
         // Retorna el contacto
