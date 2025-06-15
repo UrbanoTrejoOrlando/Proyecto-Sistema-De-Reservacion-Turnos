@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AuthPage from './Login/AuthPage';
 import Administrador from './Administrador/Administrador';
 import Cliente from './Cliente/Cliente';
+import Servicios from './Administrador/Servicios';
+import Estadisticas from './Administrador/Estadisticas';
 
 const App = () => {
   return (
@@ -14,6 +16,8 @@ const App = () => {
         <Route path="/registro" element={<AuthPage />} /> 
         <Route path="/administrador" element={<Administrador />} />
         <Route path="/cliente" element={<Cliente />} />
+        <Route path="/servicios" element={<Servicios />} />
+        <Route path="/estadisticas" element={<Estadisticas />} />
       </Routes>
     </Router>
   );
