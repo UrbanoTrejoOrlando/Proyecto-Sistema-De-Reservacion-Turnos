@@ -7,106 +7,79 @@ const Servicios = () => {
   const [services, setServices] = useState([]);
   const [isCreating, setIsCreating] = useState(false);
   const [editingService, setEditingService] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     nombre: '',
     descripcion: '',
     duracion: 30,
-    estado: 'Disponible',
+    estado: 'Disponible'
   });
 
-  // Obtener todos los servicios al cargar el componente
-  const fetchServices = async () => {
-    try {
-      const response = await fetch(ApiServices);
-      const data = await response.json();
-      // Mapear _id a id y normalizar estado
-      const formattedData = data.map(({ _id, ...service }) => ({
-        id: _id,
-        ...service,
-        estado: service.estado || 'Disponible', // Asegurar valor por defecto
-      }));
-      setServices(formattedData);
-    } catch (error) {
-      console.error('Error al obtener servicios:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'No se pudieron cargar los servicios. Inténtalo de nuevo.',
-      });
-    }
-  };
-
+  // Obtener servicios desde la API
   useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await fetch(ApiServices);
+        if (!response.ok) throw new Error('Error al obtener servicios');
+        const data = await response.json();
+        setServices(data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error:', error);
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+
     fetchServices();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     try {
-      if (editingService) {
-        // Actualizar servicio
-        const response = await fetch(`${ApiServices}/${editingService}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
+      const method = editingService ? 'PUT' : 'POST';
+      const url = editingService 
+        ? `${ApiServices}/${editingService}` 
+        : ApiServices;
 
-        if (response.ok) {
-          const updatedService = await response.json();
-          setServices(
-            services.map((service) =>
-              service.id === editingService
-                ? { ...updatedService, id: updatedService._id }
-                : service
-            )
-          );
-          setEditingService(null);
-          Swal.fire({
-            icon: 'success',
-            title: 'Servicio Actualizado',
-            text: 'El servicio ha sido actualizado correctamente.',
-            timer: 2000,
-            showConfirmButton: false,
-          });
-        } else {
-          throw new Error('Error al actualizar el servicio');
-        }
-      } else {
-        // Crear nuevo servicio
-        const response = await fetch(ApiServices, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
 
-        if (response.ok) {
-          const newService = await response.json();
-          setServices([...services, { ...newService, id: newService._id }]);
-          setIsCreating(false);
-          Swal.fire({
-            icon: 'success',
-            title: 'Servicio Creado',
-            text: 'El servicio ha sido creado correctamente.',
-            timer: 2000,
-            showConfirmButton: false,
-          });
-        } else {
-          throw new Error('Error al crear el servicio');
-        }
-      }
+      if (!response.ok) throw new Error('Error al guardar el servicio');
 
+      // Mostrar mensaje de éxito
+      Swal.fire({
+        icon: 'success',
+        title: editingService ? 'Servicio actualizado' : 'Servicio creado',
+        text: editingService 
+          ? 'El servicio se ha actualizado correctamente' 
+          : 'El servicio se ha creado correctamente',
+        confirmButtonColor: '#2563eb',
+      });
+
+      // Actualizar la lista de servicios
+      const updatedResponse = await fetch(ApiServices);
+      const updatedData = await updatedResponse.json();
+      setServices(updatedData);
+
+      // Resetear el formulario
       resetForm();
+      setEditingService(null);
+      setIsCreating(false);
     } catch (error) {
-      console.error('Error en la operación:', error);
+      console.error('Error:', error);
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'Ocurrió un error al procesar la solicitud. Inténtalo de nuevo.',
+        text: error.message,
+        confirmButtonColor: '#dc2626',
       });
     }
   };
@@ -116,87 +89,89 @@ const Servicios = () => {
       nombre: service.nombre,
       descripcion: service.descripcion,
       duracion: service.duracion,
-      estado: service.estado,
+      estado: service.estado
     });
-    setEditingService(service.id);
+    setEditingService(service._id);
     setIsCreating(false);
   };
 
   const handleDelete = async (serviceId) => {
     const result = await Swal.fire({
-      icon: 'warning',
       title: '¿Estás seguro?',
-      text: '¿Deseas eliminar este servicio? Esta acción no se puede deshacer.',
+      text: "¡No podrás revertir esto!",
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Eliminar',
-      cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
+      confirmButtonColor: '#2563eb',
+      cancelButtonColor: '#dc2626',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
     });
 
     if (result.isConfirmed) {
       try {
         const response = await fetch(`${ApiServices}/${serviceId}`, {
-          method: 'DELETE',
+          method: 'DELETE'
         });
 
-        if (response.ok) {
-          setServices(services.filter((service) => service.id !== serviceId));
-          Swal.fire({
-            icon: 'success',
-            title: 'Servicio Eliminado',
-            text: 'El servicio ha sido eliminado correctamente.',
-            timer: 2000,
-            showConfirmButton: false,
-          });
-        } else {
-          throw new Error('Error al eliminar el servicio');
-        }
+        if (!response.ok) throw new Error('Error al eliminar el servicio');
+
+        // Mostrar mensaje de éxito
+        Swal.fire({
+          icon: 'success',
+          title: 'Servicio eliminado',
+          text: 'El servicio se ha eliminado correctamente',
+          confirmButtonColor: '#2563eb',
+        });
+
+        // Actualizar la lista de servicios
+        const updatedServices = services.filter(s => s._id !== serviceId);
+        setServices(updatedServices);
       } catch (error) {
-        console.error('Error al eliminar el servicio:', error);
+        console.error('Error:', error);
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'No se pudo eliminar el servicio. Inténtalo de nuevo.',
+          text: error.message,
+          confirmButtonColor: '#dc2626',
         });
       }
     }
   };
 
-  const handleToggleAvailability = async (service) => {
-    const newEstado = service.estado === 'Disponible' ? 'No disponible' : 'Disponible';
+  const handleToggleStatus = async (service) => {
+    const newStatus = service.estado === 'Disponible' ? 'No disponible' : 'Disponible';
+    
     try {
-      const response = await fetch(`${ApiServices}/${service.id}`, {
+      const response = await fetch(`${ApiServices}/${service._id}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ ...service, estado: newEstado }),
+        body: JSON.stringify({ estado: newStatus })
       });
 
-      if (response.ok) {
-        const updatedService = await response.json();
-        setServices(
-          services.map((s) =>
-            s.id === service.id ? { ...updatedService, id: updatedService._id } : s
-          )
-        );
-        Swal.fire({
-          icon: 'success',
-          title: 'Estado Actualizado',
-          text: `El servicio ahora está ${newEstado.toLowerCase()}.`,
-          timer: 2000,
-          showConfirmButton: false,
-        });
-      } else {
-        throw new Error('Error al actualizar el estado');
-      }
+      if (!response.ok) throw new Error('Error al actualizar el servicio');
+
+      // Mostrar mensaje de éxito
+      Swal.fire({
+        icon: 'success',
+        title: 'Estado actualizado',
+        text: `El servicio ahora está ${newStatus.toLowerCase()}`,
+        confirmButtonColor: '#2563eb',
+      });
+
+      // Actualizar la lista de servicios
+      const updatedServices = services.map(s => 
+        s._id === service._id ? { ...s, estado: newStatus } : s
+      );
+      setServices(updatedServices);
     } catch (error) {
-      console.error('Error al actualizar el estado:', error);
+      console.error('Error:', error);
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'No se pudo actualizar el estado del servicio.',
+        text: error.message,
+        confirmButtonColor: '#dc2626',
       });
     }
   };
@@ -206,7 +181,7 @@ const Servicios = () => {
       nombre: '',
       descripcion: '',
       duracion: 30,
-      estado: 'Disponible',
+      estado: 'Disponible'
     });
   };
 
@@ -215,6 +190,29 @@ const Servicios = () => {
     setIsCreating(false);
     resetForm();
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border-l-4 border-red-500 p-4">
+        <div className="flex">
+          <div className="flex-shrink-0">
+            <X className="h-5 w-5 text-red-500" />
+          </div>
+          <div className="ml-3">
+            <p className="text-sm text-red-700">{error}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -232,7 +230,7 @@ const Servicios = () => {
         </button>
       </div>
 
-      {/* Formulario de Creación/Edición */}
+      {/* Formulario para crear/editar */}
       {(isCreating || editingService) && (
         <div className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex items-center justify-between mb-4">
@@ -259,6 +257,7 @@ const Servicios = () => {
                   onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
+                  maxLength="50"
                 />
               </div>
 
@@ -269,15 +268,27 @@ const Servicios = () => {
                 <input
                   type="number"
                   value={formData.duracion}
-                  onChange={(e) =>
-                    setFormData({ ...formData, duracion: parseInt(e.target.value) })
-                  }
+                  onChange={(e) => setFormData({ ...formData, duracion: parseInt(e.target.value) || 30 })}
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   min="15"
                   max="180"
                   step="15"
                   required
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Estado
+                </label>
+                <select
+                  value={formData.estado}
+                  onChange={(e) => setFormData({ ...formData, estado: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="Disponible">Disponible</option>
+                  <option value="No disponible">No disponible</option>
+                </select>
               </div>
             </div>
 
@@ -291,21 +302,8 @@ const Servicios = () => {
                 className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 rows={3}
                 required
+                maxLength="80"
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Estado
-              </label>
-              <select
-                value={formData.estado}
-                onChange={(e) => setFormData({ ...formData, estado: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="Disponible">Disponible</option>
-                <option value="No disponible">No disponible</option>
-              </select>
             </div>
 
             <div className="flex justify-end space-x-3">
@@ -335,7 +333,7 @@ const Servicios = () => {
             Servicios ({services.length})
           </h2>
         </div>
-
+        
         <div className="divide-y divide-gray-100">
           {services.length === 0 ? (
             <div className="p-8 text-center">
@@ -345,32 +343,26 @@ const Servicios = () => {
             </div>
           ) : (
             services.map((service) => (
-              <div key={service.id} className="p-6 hover:bg-gray-50 transition-colors">
+              <div key={service._id} className="p-6 hover:bg-gray-50 transition-colors">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-4">
                     <div className="flex-shrink-0">
-                      <div
-                        className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                          service.estado === 'Disponible' ? 'bg-blue-100' : 'bg-gray-100'
-                        }`}
-                      >
-                        <Stethoscope
-                          className={`w-6 h-6 ${
-                            service.estado === 'Disponible' ? 'text-blue-600' : 'text-gray-400'
-                          }`}
-                        />
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                        service.estado === 'Disponible' ? 'bg-blue-100' : 'bg-gray-100'
+                      }`}>
+                        <Stethoscope className={`w-6 h-6 ${
+                          service.estado === 'Disponible' ? 'text-blue-600' : 'text-gray-400'
+                        }`} />
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-2 mb-1">
                         <h3 className="text-lg font-semibold text-gray-900">{service.nombre}</h3>
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            service.estado === 'Disponible'
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-gray-100 text-gray-800'
-                          }`}
-                        >
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          service.estado === 'Disponible' 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-gray-100 text-gray-800'
+                        }`}>
                           {service.estado}
                         </span>
                       </div>
@@ -381,26 +373,18 @@ const Servicios = () => {
                       </div>
                     </div>
                   </div>
-
+                  
                   <div className="flex items-center space-x-2">
                     <button
-                      onClick={() => handleToggleAvailability(service)}
+                      onClick={() => handleToggleStatus(service)}
                       className={`p-2 rounded-full transition-colors ${
-                        service.estado === 'Disponible'
-                          ? 'text-green-600 hover:bg-green-50'
+                        service.estado === 'Disponible' 
+                          ? 'text-green-600 hover:bg-green-50' 
                           : 'text-gray-400 hover:bg-gray-50'
                       }`}
-                      title={
-                        service.estado === 'Disponible'
-                          ? 'Desactivar servicio'
-                          : 'Activar servicio'
-                      }
+                      title={service.estado === 'Disponible' ? 'Desactivar servicio' : 'Activar servicio'}
                     >
-                      {service.estado === 'Disponible' ? (
-                        <Eye className="w-4 h-4" />
-                      ) : (
-                        <EyeOff className="w-4 h-4" />
-                      )}
+                      {service.estado === 'Disponible' ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                     </button>
                     <button
                       onClick={() => handleEdit(service)}
@@ -410,7 +394,7 @@ const Servicios = () => {
                       <Edit className="w-4 h-4" />
                     </button>
                     <button
-                      onClick={() => handleDelete(service.id)}
+                      onClick={() => handleDelete(service._id)}
                       className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
                       title="Eliminar servicio"
                     >
