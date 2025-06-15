@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import AdminHeader from './AdminHeader';
 import { BarChart3,Users,Stethoscope } from 'lucide-react'; 
 import Usuarios from './Usuarios'; 
+import Servicios from './Servicios';
 
 const Administrador = () => {
   // Variable de estado para ir cambiando las diferentes secciones
@@ -49,6 +50,8 @@ const Administrador = () => {
         </div>
         <div className="bg-white rounded-lg shadow p-6">
           {currentView === 'users' && <Usuarios />}
+          {currentView === 'services' && <Servicios />}
+
         </div>
       </div>
     </div>
