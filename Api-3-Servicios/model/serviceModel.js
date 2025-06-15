@@ -18,21 +18,6 @@ const serviceSchema = new mongoose.Schema(
       minlength: [2, "La descripción debe tener al menos dos caracteres"],
       maxlength: [80, "La descripción no debe rebasar los 80 caracteres"],
     },
-    categoria: {
-      type: String,
-      required: [true, "La categoría es obligatoria"],
-      enum: {
-        values: [
-          "Consulta General",
-          "Pediatría",
-          "Medicina preventiva",
-          "Laboratorio clínico",
-          "Odontología",
-          "Nutrición",
-        ],
-        message: "{VALUE} no es una categoría válida",
-      },
-    },
     duracion: {
       type: Number, // en minutos
       required: [true, "La duración es obligatoria"],
