@@ -22,6 +22,11 @@ const serviceSchema = new mongoose.Schema(
       type: Number, // en minutos
       required: [true, "La duración es obligatoria"],
     },
+    estado: {
+      type: String,
+      enum: ["Disponible", "No disponible"],
+      default: "Disponible",
+    },
   },
   {
     timestamps: true,
