@@ -5,7 +5,11 @@ const ApiUsuarios = "http://localhost:3006/api-1-user/users"
 // Segunda url para generar el login
 const ApiAuth = "http://localhost:3007/api-2-auth/login"
 
+// Tercera url para los servicios
 const ApiServices = "http://localhost:3008/api-3-services/services"
 
+// Cuarta url para los turnos
+const ApiTurnos = "http://localhost:3009/api-4-turnos/turnos"
+
 // Exportacion de url
-export {ApiUsuarios, ApiAuth, ApiServices};
+export {ApiUsuarios, ApiAuth, ApiServices, ApiTurnos};
