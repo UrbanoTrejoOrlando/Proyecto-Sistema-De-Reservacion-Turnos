@@ -1,21 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Calendar, Clock, Stethoscope } from 'lucide-react';
+import { Search, Calendar, Clock, Stethoscope, AlertCircle } from 'lucide-react';
 import { ApiServices } from '../common/server';
+import { useNavigate } from 'react-router-dom';
 
 const ClienteServicios = () => {
   const [services, setServices] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   // Función para obtener los servicios de la API
   const obtenerServicios = async () => {
     try {
       const response = await fetch(ApiServices);
+      if (!response.ok) {
+        throw new Error(`Error al cargar servicios: ${response.status}`);
+      }
       const data = await response.json();
       // Filtrar solo los servicios con estado "Disponible"
-      const disponibles = data.filter(servicio => servicio.estado === 'Disponible');
+      const disponibles = data.filter((servicio) => servicio.estado === 'Disponible');
       setServices(disponibles);
     } catch (error) {
       console.error('Error al obtener los servicios:', error);
+      setError('No se pudieron cargar los servicios. Inténtalo de nuevo.');
     }
   };
 
@@ -24,7 +32,7 @@ const ClienteServicios = () => {
   }, []);
 
   // Filtrado por término de búsqueda
-  const serviciosFiltrados = services.filter(service =>
+  const serviciosFiltrados = services.filter((service) =>
     service.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
     service.descripcion.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -51,13 +59,22 @@ const ClienteServicios = () => {
         </div>
       </div>
 
+      {/* Mensaje de error */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+          <div className="flex items-center">
+            <AlertCircle className="w-5 h-5 text-red-600 mr-2" />
+            <p className="text-red-600 text-sm">{error}</p>
+          </div>
+        </div>
+      )}
+
       {/* Lista de Servicios */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {serviciosFiltrados.map((service) => (
           <div
             key={service._id}
             className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-[1.02]"
-            onClick={() => console.log('Reservar servicio:', service.nombre)} // Aquí puedes abrir modal o ir a booking
           >
             <div className="p-6">
               <div className="flex items-start space-x-4">
@@ -69,16 +86,17 @@ const ClienteServicios = () => {
                 <div className="flex-1 min-w-0">
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">{service.nombre}</h3>
                   <p className="text-sm text-gray-600 mb-3 line-clamp-2">{service.descripcion}</p>
-
                   <div className="flex items-center text-sm text-gray-500 mb-4">
                     <Clock className="w-4 h-4 mr-1" />
                     <span>{service.duracion} minutos</span>
                   </div>
                 </div>
               </div>
-
               <div className="mt-4 pt-4 border-t border-gray-100">
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center">
+                <button
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
+                  onClick={() => navigate(`/reservar/${service._id}`, { state: { service } })}
+                >
                   <Calendar className="w-4 h-4 mr-2" />
                   Reservar Cita
                 </button>
@@ -89,7 +107,7 @@ const ClienteServicios = () => {
       </div>
 
       {/* Mensaje si no hay resultados */}
-      {serviciosFiltrados.length === 0 && (
+      {serviciosFiltrados.length === 0 && !error && (
         <div className="text-center py-12">
           <Stethoscope className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">No se encontraron servicios</h3>
