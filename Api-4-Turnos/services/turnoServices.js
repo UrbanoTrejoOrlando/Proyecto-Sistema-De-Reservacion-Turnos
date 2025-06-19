@@ -45,9 +45,9 @@ class TurnoService {
       servicio: servicioId,
       fecha: new Date(fecha),
       hora,
-      estado: { $in: ["reservado", "disponible"] },
+      estado: "reservado", // Solo verificamos contra turnos reservados
     });
-    return !turno || turno.estado === "disponible";
+    return !turno;
   }
 
   async crearTurno(data, userId, token, io) {
@@ -68,18 +68,38 @@ class TurnoService {
         throw new Error("El turno ya está reservado");
       }
 
-      const nuevoTurno = await Turno.create({
+      // Buscar si existe un turno disponible para reutilizar
+      let turnoExistente = await Turno.findOne({
         servicio,
-        usuario: userId,
         fecha: new Date(fecha),
         hora,
-        estado: "reservado",
-        notas,
-        metadata: {
-          creadoPor: userId,
-          tokenUsed: token,
-        },
+        estado: "disponible"
       });
+
+      let nuevoTurno;
+      
+      if (turnoExistente) {
+        // Actualizar turno existente
+        turnoExistente.estado = "reservado";
+        turnoExistente.usuario = userId;
+        turnoExistente.notas = notas || turnoExistente.notas;
+        turnoExistente.metadata.ultimaModificacion = new Date();
+        nuevoTurno = await turnoExistente.save();
+      } else {
+        // Crear nuevo turno
+        nuevoTurno = await Turno.create({
+          servicio,
+          usuario: userId,
+          fecha: new Date(fecha),
+          hora,
+          estado: "reservado",
+          notas,
+          metadata: {
+            creadoPor: userId,
+            tokenUsed: token,
+          },
+        });
+      }
 
       // Emitir evento en tiempo real
       io.emit("turno:created", { ...nuevoTurno._doc, id: nuevoTurno._id });
@@ -100,14 +120,18 @@ class TurnoService {
         throw new Error("No autorizado para cancelar este turno");
       }
 
+      // Cambiar estado a disponible en lugar de cancelado
       const updatedTurno = await Turno.findByIdAndUpdate(
         turnoId,
         {
-          estado: "cancelado",
+          estado: "disponible",
           $set: {
             "metadata.ultimaModificacion": new Date(),
-            "metadata.canceladoPor": userId,
           },
+          $unset: {
+            usuario: 1,
+            notas: 1
+          }
         },
         { new: true }
       );
@@ -125,6 +149,7 @@ class TurnoService {
     try {
       // Solo mostrar los turnos del usuario autenticado
       filtros.usuario = userId;
+      filtros.estado = "reservado"; // Solo mostrar turnos reservados
 
       const turnos = await Turno.find(filtros).sort({ fecha: 1, hora: 1 });
 
@@ -158,25 +183,25 @@ class TurnoService {
       const fechaObj = new Date(fecha);
       if (isNaN(fechaObj.getTime())) throw new Error("Fecha inválida");
 
-      const turnosExistentes = await Turno.find({
+      // Obtener solo turnos reservados para esa fecha
+      const turnosReservados = await Turno.find({
         servicio: servicioId,
         fecha: fechaObj,
-        estado: "reservado",
+        estado: "reservado"
       });
 
-      const horariosDisponibles = [];
+      // Generar todos los posibles horarios
+      const todosLosHorarios = [];
       for (let hora = 8; hora < 20; hora++) {
         for (let minuto = 0; minuto < 60; minuto += 30) {
-          const horaStr = `${hora.toString().padStart(2, "0")}:${minuto
-            .toString()
-            .padStart(2, "0")}`;
-
-          const existe = turnosExistentes.some((t) => t.hora === horaStr);
-          if (!existe) {
-            horariosDisponibles.push(horaStr);
-          }
+          todosLosHorarios.push(`${hora.toString().padStart(2, "0")}:${minuto.toString().padStart(2, "0")}`);
         }
       }
+
+      // Filtrar horarios ocupados
+      const horariosDisponibles = todosLosHorarios.filter(hora => {
+        return !turnosReservados.some(turno => turno.hora === hora);
+      });
 
       return horariosDisponibles;
     } catch (error) {
