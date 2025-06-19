@@ -21,6 +21,6 @@ app.use('/api-3-services',userRouter);
 ConnectDB();
 // Eecucion del servidor
 app.listen(PORT, ()=>{
-    console.log("Server running in http://localhost:"+PORT)
+    console.log("Server running in http://192.168.1.61:"+PORT)
 });
 
