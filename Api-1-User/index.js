@@ -8,7 +8,7 @@ const {ConnectDB} = require("./data/config");
 const userRouter = require("./routes/userRoutes");
 // Importacion dotenv
 require("dotenv").config();
-// Definicion del puerto 
+// Definicion del puerto
 const PORT = process.env.PORT
 
 // Creacion de la instancia del servidor
@@ -22,5 +22,5 @@ ConnectDB();
 
 // Ejecucion del servidor
 app.listen(PORT, ()=>{
-    console.log("Server running in http://localhost:"+PORT)
+    console.log("Server running in http://192.168.103.85:"+PORT)
 });
