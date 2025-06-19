@@ -35,7 +35,7 @@ const TurnoSchema = new mongoose.Schema(
     },
     estado: {
       type: String,
-      enum: ["disponible", "reservado", "cancelado", "completado"],
+      enum: ["disponible", "reservado", "completado"], // Eliminado "cancelado"
       default: "disponible",
     },
     notas: {
@@ -47,9 +47,6 @@ const TurnoSchema = new mongoose.Schema(
       creadoPor: {
         type: String,
         required: true,
-      },
-      canceladoPor: {
-        type: String,
       },
       ultimaModificacion: Date,
       tokenUsed: {
@@ -64,8 +61,14 @@ const TurnoSchema = new mongoose.Schema(
   }
 );
 
-// Índice compuesto para evitar duplicados
-TurnoSchema.index({ servicio: 1, fecha: 1, hora: 1 }, { unique: true });
+// Índice único solo para turnos reservados
+TurnoSchema.index(
+  { servicio: 1, fecha: 1, hora: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { estado: "reservado" },
+  }
+);
 
 // Middleware para actualizar metadata
 TurnoSchema.pre("save", function (next) {
