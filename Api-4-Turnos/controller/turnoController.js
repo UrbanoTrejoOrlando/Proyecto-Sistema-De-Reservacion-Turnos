@@ -10,7 +10,10 @@ const createTurno = async (req, res) => {
     );
     res.status(201).json(turno);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ 
+      error: error.message,
+      code: error.code // Agregar código de error para mejor manejo en frontend
+    });
   }
 };
 
@@ -24,7 +27,10 @@ const cancelTurno = async (req, res) => {
     );
     res.json(turno);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ 
+      error: error.message,
+      code: error.code
+    });
   }
 };
 
@@ -37,7 +43,10 @@ const listTurnos = async (req, res) => {
     );
     res.json(turnos);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ 
+      error: error.message,
+      code: error.code
+    });
   }
 };
 
@@ -51,7 +60,10 @@ const getAvailableTurnos = async (req, res) => {
     );
     res.json(horarios);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ 
+      error: error.message,
+      code: error.code
+    });
   }
 };
 
