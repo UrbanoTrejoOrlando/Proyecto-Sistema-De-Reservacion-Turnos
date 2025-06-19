@@ -12,5 +12,5 @@ app.use("/api-2-auth", authRoutes);
 
 const PORT = process.env.PORT || 3007;
 app.listen(PORT, () => {
-    console.log("Server running in http://localhost:"+PORT)
+    console.log("Server running in http://192.168.1.61:"+PORT)
 });
