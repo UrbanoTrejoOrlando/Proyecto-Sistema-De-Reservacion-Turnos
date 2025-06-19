@@ -52,7 +52,7 @@ mongoose.connect(process.env.URL)
     console.log('Conectado a MongoDB');
     const PORT = process.env.PORT || 3010;
     server.listen(PORT, () => {
-      console.log(`Servidor de turnos en http://localhost:${PORT}`);
+      console.log(`Servidor de turnos en http://192.168.103.85:${PORT}`);
     });
   })
   .catch(err => console.error('Error MongoDB:', err));
